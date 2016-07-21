@@ -1813,6 +1813,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _ = __webpack_require__(3);
 	var ColumnProperties = __webpack_require__(4);
 
+	var DefaultHeaderComponent = React.createClass({
+	    displayName: 'DefaultHeaderComponent',
+
+	    render: function render() {
+	        return React.createElement('span', null, this.props.displayName);
+	    }
+	});
+
 	var GridTitle = React.createClass({
 	    displayName: "GridTitle",
 	    getDefaultProps: function () {
@@ -1861,6 +1869,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var meta = that.props.columnSettings.getColumnMetadataByName(col);
 	            var columnIsSortable = that.props.columnSettings.getMetadataColumnProperty(col, "sortable", true);
 	            var displayName = that.props.columnSettings.getMetadataColumnProperty(col, "displayName", col);
+				var HeaderComponent = that.props.columnSettings.getMetadataColumnProperty(col, "customHeaderComponent", DefaultHeaderComponent);
+	            var headerProps = that.props.columnSettings.getMetadataColumnProperty(col, "customHeaderComponentProps", {});
+
 
 	            columnSort = meta == null ? columnSort : (columnSort && columnSort + " " || columnSort) + that.props.columnSettings.getMetadataColumnProperty(col, "cssClassName", "");
 
@@ -1881,6 +1892,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                displayName,
 	                sortComponent
 	            );
+
+	            return React.createElement('th', 
+	            	{ onClick: columnIsSortable ? that.sort(col) : null, 'data-title': col, className: columnSort, key: col,
+	                style: titleStyles }, React.createElement(HeaderComponent, _extends({ columnName: col, displayName: displayName}, headerProps)), 
+	                sortComponent);
 	        });
 
 	        //Get the row from the row settings.
